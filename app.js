@@ -130,3 +130,8 @@ app.get('/profile', (req, res) => {
 app.get('/config', (req, res) => {
     throw new Error('Error interno del servidor');
 });
+
+// ====== INICIAR SERVIDOR ======
+app.listen(3000, () => {
+    console.log('Servidor ejecutándose en http://localhost:3000');
+});

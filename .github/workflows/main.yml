@@ -1,0 +1,35 @@
+name: DevSecOps Pipeline
+
+on:
+  push:
+    branches: [ "main-secure", "main-vulnerable" ]
+  pull_request:
+    branches: [ "main-secure", "main-vulnerable" ]
+
+jobs:
+  security-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v3
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: Ejecutar SAST con Semgrep
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: "p/javascript"
+
+      - name: Escaneo de dependencias con Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          format: 'table'
+          severity: 'CRITICAL,HIGH'

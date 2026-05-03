@@ -41,6 +41,24 @@ Versión segura:
     git checkout main-secure
     node app.js
 
+------------------------------------------------------------------------
+
+## Docker
+
+La aplicación ha sido dockerizada para facilitar su despliegue en entornos aislados.
+
+### Construcción de la imagen
+
+```bash
+docker build -t euvwa-app .
+```
+
+### Ejecución del contenedor
+
+```bash
+docker run -p 3000:3000 euvwa-app
+```
+
 Servidor disponible en: http://localhost:3000
 
 ------------------------------------------------------------------------

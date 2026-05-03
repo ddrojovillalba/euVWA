@@ -56,7 +56,7 @@ docker build -t euvwa-app .
 ### Ejecución del contenedor
 
 ```bash
-docker run -p 3001:3000 euvwa-app
+docker run -p 3000:3000 euvwa-app
 ```
 
 Servidor disponible en: http://localhost:3000

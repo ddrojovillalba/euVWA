@@ -46,7 +46,7 @@ jobs:
       - name: Generar SBOM con Syft
         run: |
           curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh
-          syft . -o cyclonedx-json > sbom.json
+          ./bin/syft . -o cyclonedx-json > sbom.json
 
       # ---------- DOCKER BUILD ----------
       - name: Construir imagen Docker

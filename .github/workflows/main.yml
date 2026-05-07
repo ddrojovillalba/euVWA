@@ -75,6 +75,9 @@ jobs:
         
       - name: Ejecutar análisis DAST con OWASP ZAP
         run: |
+          mkdir zap-output
+
           docker run --network="host" \
+            -v $(pwd)/zap-output:/zap/wrk/:rw \
             ghcr.io/zaproxy/zaproxy:stable \
             zap-baseline.py -t http://localhost:3000 -I

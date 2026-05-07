@@ -72,6 +72,10 @@ jobs:
           npm install
           node app.js &
           sleep 15
+
+      - name: Dar permisos al workspace para ZAP
+        run: |
+          sudo chmod -R 777 ${{ github.workspace }}
         
       - name: Ejecutar análisis DAST con OWASP ZAP
         run: |

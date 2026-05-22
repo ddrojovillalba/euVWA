@@ -36,11 +36,11 @@ jobs:
       # ---------- TRIVY FS ----------
       - name: Escaneo de dependencias con Trivy
         uses: aquasecurity/trivy-action@master
-        continue-on-error: true
         with:
           scan-type: 'fs'
           format: 'table'
           severity: 'CRITICAL,HIGH'
+          exit-code: '1'
 
       # ---------- SBOM ----------
       - name: Generar SBOM con Syft

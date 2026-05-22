@@ -29,7 +29,6 @@ jobs:
 
       # ---------- SAST ----------
       - name: Ejecutar SAST con Semgrep
-        continue-on-error: true
         uses: returntocorp/semgrep-action@v1
         with:
           config: "p/javascript"
@@ -41,6 +40,7 @@ jobs:
           scan-type: 'fs'
           format: 'table'
           severity: 'CRITICAL,HIGH'
+          exit-code: '1'
 
       # ---------- SBOM ----------
       - name: Generar SBOM con Syft

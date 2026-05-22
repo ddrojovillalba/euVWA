@@ -1,0 +1,93 @@
+name: DevSecOps Pipeline
+
+on:
+  push:
+    branches: [ "main-secure", "main-vulnerable" ]
+
+  pull_request:
+    branches: [ "main-secure", "main-vulnerable" ]
+
+jobs:
+  security-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # ---------- CHECKOUT ----------
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      # ---------- NODE ----------
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      # ---------- INSTALL ----------
+      - name: Instalar dependencias
+        run: npm install
+
+      # ---------- SAST ----------
+      - name: Ejecutar SAST con Semgrep
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: "p/javascript"
+
+      # ---------- TRIVY FS ----------
+      - name: Escaneo de dependencias con Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+
+      # ---------- SBOM ----------
+      - name: Generar SBOM con Syft
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh
+          ./bin/syft . -o cyclonedx-json > sbom.json
+
+      # ---------- DOCKER BUILD ----------
+      - name: Construir imagen Docker
+        run: docker build -t euvwa-app .
+
+      # ---------- DOCKER SCAN ----------
+      - name: Escaneo de imagen Docker con Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'euvwa-app'
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+
+      # ---------- START APP ----------
+      - name: Iniciar aplicación
+        run: |
+          npm start &
+          sleep 15
+
+      # ---------- DAST ----------
+      - name: Ejecutar aplicación
+        run: |
+          npm install
+          node app.js &
+          sleep 15
+
+      - name: Dar permisos al workspace para ZAP
+        run: |
+          sudo chmod -R 777 ${{ github.workspace }}
+
+      - name: Ejecutar análisis DAST con OWASP ZAP
+        run: |
+          mkdir -p zap-output
+          chmod -R 777 zap-output
+
+          docker run --user root --network="host" \
+            -v $(pwd)/zap-output:/zap/wrk/:rw \
+            ghcr.io/zaproxy/zaproxy:stable \
+            zap-baseline.py \
+            -t http://localhost:3000 \
+            -J report_json.json \
+            -w report_md.md \
+            -r report_html.html \
+            -I

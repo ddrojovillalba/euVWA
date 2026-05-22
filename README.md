@@ -247,6 +247,12 @@ El desarrollo realizado evidencia cómo las vulnerabilidades del OWASP Top 10 pu
 
 ------------------------------------------------------------------------
 
+## Estado del pipeline
+
+Última validación ejecutada correctamente sobre la rama secure.
+
+------------------------------------------------------------------------
+
 ## Autor
 
 David Rojo Villalba

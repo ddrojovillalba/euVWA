@@ -54,6 +54,13 @@ jobs:
           curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh
           ./bin/syft . -o cyclonedx-json > sbom.json
 
+      # ---------- SUBIR SBOM ----------
+      - name: Subir SBOM como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-cyclonedx
+          path: sbom.json
+
       # ---------- DOCKER BUILD ----------
       - name: Construir imagen Docker
         run: docker build -t euvwa-app .

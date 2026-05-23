@@ -1,5 +1,10 @@
 # euVWA - UE Vulnerable Web Application
 
+![Node.js](https://img.shields.io/badge/Node.js-18-green)
+![Docker](https://img.shields.io/badge/Docker-Enabled-blue)
+![OWASP](https://img.shields.io/badge/OWASP-Top10-red)
+![DevSecOps](https://img.shields.io/badge/DevSecOps-Pipeline-orange)
+
 Aplicación web vulnerable inspirada en DVWA, desarrollada en Node.js y Express, orientada al análisis y explotación controlada de vulnerabilidades incluidas en el OWASP Top 10.
 
 Incluye dos versiones diferenciadas: 
@@ -60,6 +65,43 @@ docker run -p 3000:3000 euvwa-app
 ```
 
 Servidor disponible en: http://localhost:3000
+
+### Imagen publicada en GitHub Container Registry
+
+La imagen Docker generada por el pipeline se publica automáticamente en GitHub Container Registry (GHCR):
+
+```bash
+docker pull ghcr.io/ddrojovillalba/euvwa-app:latest
+```
+
+------------------------------------------------------------------------
+
+## Pipeline DevSecOps
+
+El proyecto incorpora un pipeline DevSecOps automatizado mediante GitHub Actions, orientado a integrar controles de seguridad durante todo el ciclo de vida del desarrollo.
+
+El pipeline incluye las siguientes fases:
+
+- SAST estático mediante Semgrep
+- Escaneo de dependencias con Trivy
+- Generación de SBOM en formato CycloneDX mediante Syft
+- Construcción segura de imagen Docker
+- Publicación automática en GitHub Container Registry (GHCR)
+- Escaneo de vulnerabilidades sobre la imagen Docker
+- Análisis DAST automatizado con OWASP ZAP
+
+El workflow se ejecuta automáticamente sobre las ramas:
+
+- `main-vulnerable`
+- `main-secure`
+
+### Diferencias entre ramas
+
+- `main-vulnerable`:
+  utiliza configuración estricta del pipeline para provocar fallo automático cuando se detectan vulnerabilidades críticas o de alta severidad.
+
+- `main-secure`:
+  incorpora configuraciones orientadas a la generación completa de evidencias durante las fases de validación académica del pipeline, permitiendo completar todas las etapas de análisis incluso cuando se detectan determinadas alertas.
 
 ------------------------------------------------------------------------
 
@@ -243,6 +285,12 @@ El desarrollo realizado evidencia cómo las vulnerabilidades del OWASP Top 10 pu
 
 - Node.js
 - Express
+- Docker
+- GitHub Actions
+- Semgrep
+- Trivy
+- Syft
+- OWASP ZAP
 - Multer
 
 ------------------------------------------------------------------------

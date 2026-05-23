@@ -1,5 +1,9 @@
 name: DevSecOps Pipeline
 
+permissions:
+  contents: read
+  packages: write
+
 on:
   push:
     branches: [ "main-secure", "main-vulnerable" ]
@@ -16,6 +20,8 @@ jobs:
       # ---------- CHECKOUT ----------
       - name: Checkout del código
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true
 
       # ---------- NODE ----------
       - name: Configurar Node.js
@@ -52,6 +58,20 @@ jobs:
       - name: Construir imagen Docker
         run: docker build -t euvwa-app .
 
+      # ---------- LOGIN GHCR ----------
+      - name: Login en GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # ---------- PUBLICAR IMAGEN ----------
+      - name: Publicar imagen Docker
+        run: |
+          docker tag euvwa-app ghcr.io/ddrojovillalba/euvwa/euvwa-app:latest
+          docker push ghcr.io/ddrojovillalba/euvwa/euvwa-app:latest
+
       # ---------- DOCKER SCAN ----------
       - name: Escaneo de imagen Docker con Trivy
         uses: aquasecurity/trivy-action@master
@@ -73,7 +93,7 @@ jobs:
           node app.js &
           sleep 15
 
-      # ---------- ZAP PERMISSIONS ----------
+      # ---------- PERMISOS ZAP ----------
       - name: Dar permisos al workspace para ZAP
         run: |
           sudo chmod -R 777 ${{ github.workspace }}

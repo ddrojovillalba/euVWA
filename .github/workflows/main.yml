@@ -20,6 +20,8 @@ jobs:
       # ---------- CHECKOUT ----------
       - name: Checkout del código
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true
 
       # ---------- NODE ----------
       - name: Configurar Node.js

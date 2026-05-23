@@ -1,5 +1,9 @@
 name: DevSecOps Pipeline
 
+permissions:
+  contents: read
+  packages: write
+
 on:
   push:
     branches: [ "main-secure", "main-vulnerable" ]
@@ -51,6 +55,20 @@ jobs:
       # ---------- DOCKER BUILD ----------
       - name: Construir imagen Docker
         run: docker build -t euvwa-app .
+
+      # ---------- LOGIN GHCR ----------
+      - name: Login en GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # ---------- PUBLICAR IMAGEN ----------
+      - name: Publicar imagen Docker
+        run: |
+          docker tag euvwa-app ghcr.io/${{ github.repository }}/euvwa-app:latest
+          docker push ghcr.io/${{ github.repository }}/euvwa-app:latest
 
       # ---------- DOCKER SCAN ----------
       - name: Escaneo de imagen Docker con Trivy

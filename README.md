@@ -90,6 +90,12 @@ El pipeline incluye las siguientes fases:
 - Escaneo de vulnerabilidades sobre la imagen Docker
 - Análisis DAST automatizado con OWASP ZAP
 
+### SBOM generado automáticamente
+
+El pipeline genera automáticamente un Software Bill of Materials (SBOM) en formato CycloneDX mediante Syft.
+
+El archivo `sbom.json` se publica como artefacto del workflow de GitHub Actions, permitiendo auditar dependencias, componentes y versiones incluidas en la aplicación e imagen Docker.
+
 El workflow se ejecuta automáticamente sobre las ramas:
 
 - `main-vulnerable`

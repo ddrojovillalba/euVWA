@@ -67,8 +67,8 @@ jobs:
       # ---------- PUBLICAR IMAGEN ----------
       - name: Publicar imagen Docker
         run: |
-          docker tag euvwa-app ghcr.io/${{ github.repository }}/euvwa-app:latest
-          docker push ghcr.io/${{ github.repository }}/euvwa-app:latest
+          docker tag euvwa-app ghcr.io/ddrojovillalba/euvwa-app:latest
+          docker push ghcr.io/ddrojovillalba/euvwa-app:latest
 
       # ---------- DOCKER SCAN ----------
       - name: Escaneo de imagen Docker con Trivy
